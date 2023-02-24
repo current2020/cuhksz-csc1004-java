@@ -56,4 +56,26 @@ public class UserList
         register(username, password);
         return 0;
     }
+
+    public int loginAttempt(String username, String password)
+    {
+        /* a user tries to log in
+         * return 0 stands for login successfully
+         * return 1 stands for username invalid
+         * return 2 stands for username does not exist
+         * return 3 stands for password incorrect
+         */
+        if(username.length() < usernameLengthLimitMin)
+            return 1;
+        if(username.length() > usernameLengthLimit)
+            return 1;
+        if(!User.isUsernameValid(username))
+            return 1;
+        int userID = namepool.find(username);
+        if(userID == 0)
+            return 2;
+        if(!userList[userID].password.equals(password))
+            return 3;
+        return 0;
+    }
 }
