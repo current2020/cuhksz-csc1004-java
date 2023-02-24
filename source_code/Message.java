@@ -20,42 +20,24 @@ public class Message
         this.text = text;
     }
 
-    private void edit(String text)
+    public void edit(String text)
     {
         this.isEdited = true;
         this.text = text;
     }
 
-    private void retreat()
+    public void retreat()
     {
         this.isRetreated = true;
+        this.text = null;
     }
 
-    public int editAttempt(String text)
+    public boolean withinTime()
     {
-        /* return 0 stands for edit successfully
-         * return 1 stands for allowed edit time exceeded
-         * return 2 stands for this is not a text message
-         */
-        if(messageType != 0)
-            return 2;
         Date currenDate = new Date();
         if(currenDate.getTime() - this.sendingTime.getTime() > editTimeLimitMillisecond)
-            return 1;
-        this.edit(text);
-        return 0;
-    }
-
-    public int retreatAttempt()
-    {
-        /* return 0 stands for retreat successfully
-         * return 1 stands for allowed edit time exceeded
-         */
-        Date currenDate = new Date();
-        if(currenDate.getTime() - this.sendingTime.getTime() > editTimeLimitMillisecond)
-            return 1;
-        this.retreat();
-        return 0;
+            return false;
+        return true;
     }
 
     public String getSendingTime()
@@ -67,27 +49,8 @@ public class Message
     {
         if(isRetreated)
             return "";
-        if(messageType == 0)
-            return text;
-        return "Not Supported Message Type";
-    }
-
-    public String getLabel()
-    {
-        if(isRetreated)
-            return "[Retreated]";
-        if(isEdited)
-            return "[Edited]";
-        return "";
-    }
-
-    public long getTime()
-    {
-        return this.sendingTime.getTime();
-    }
-
-    public void fixTime()
-    {
-        this.sendingTime = new Date();
+        if(messageType > 0)
+            return "Not Supported Message Type";
+        return text;
     }
 }
