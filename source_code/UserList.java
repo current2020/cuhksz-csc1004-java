@@ -1,4 +1,3 @@
-package src;
 public class UserList
 {
     private User[] userList;

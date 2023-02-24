@@ -1,4 +1,3 @@
-package src;
 public class Trie
 {
     private int SIGMA, MAXN, size;
