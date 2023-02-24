@@ -69,11 +69,6 @@ public class Trie
                 return 0;
             u = this.ch[u][c];
         }
-        return u;
-    }
-
-    public int getInfo(int u)
-    {
-        return this.info[u];
+        return info[u];
     }
 }
