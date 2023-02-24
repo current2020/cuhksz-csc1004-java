@@ -2,7 +2,7 @@ import java.util.Date;
 
 public class Message
 {
-    private User sender;
+    public String senderName;
     private Date sendingTime;
     private String text;
     private int messageType;
@@ -10,12 +10,12 @@ public class Message
     public boolean isRetreated;
     public boolean isEdited;
 
-    public Message(User sender, String text)
+    public Message(String senderName, String text)
     {
         this.messageType = 0;
         this.isRetreated = false;
         this.isEdited = false;
-        this.sender = sender;
+        this.senderName = senderName;
         this.sendingTime = new Date();
         this.text = text;
     }
@@ -56,11 +56,6 @@ public class Message
             return 1;
         this.retreat();
         return 0;
-    }
-
-    public String getSenderName()
-    {
-        return sender.username;
     }
 
     public String getSendingTime()
