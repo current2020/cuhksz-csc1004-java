@@ -65,41 +65,22 @@ class Receiver extends Thread
 
     private void quitRequest()
     {
-        synchronized(localMessageList.LOCK)
-        {
-            localMessageList.cacheNotification("QUIT");
-        }
+
     }
 
     private void messageRequest()
     {
-        String senderName = input.nextLine();
-        String text = input.nextLine();
-        synchronized(localMessageList.LOCK)
-        {
-            localMessageList.addNewMessage(new Message(senderName, text));
-        }
+
     }
 
     private void editRequest()
     {
-        String username = input.nextLine();
-        int stepbacks = Integer.parseInt(input.nextLine());
-        String text = input.nextLine();
-        synchronized(localMessageList.LOCK)
-        {
-            localMessageList.editMessage(username, stepbacks, text);
-        }
+
     }
 
     private void retreatRequest()
     {
-        String username = input.nextLine();
-        int stepbacks = Integer.parseInt(input.nextLine());
-        synchronized(localMessageList.LOCK)
-        {
-            localMessageList.retreatMessage(username, stepbacks);
-        }
+
     }
 
     private void handle()
@@ -216,13 +197,8 @@ public class Client
         return true;
     }
 
-    public String readCache()
-    {
-
-    }
-
     public String askForChats()
     {
-
+        return "";
     }
 }
