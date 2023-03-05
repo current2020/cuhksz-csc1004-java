@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class ServerConsole
 {
-    private static Server server;
+    private static Server server = new Server();
 
     public static void main(String[] args)
     {
