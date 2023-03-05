@@ -11,7 +11,7 @@ class ServerState
 {
     public boolean isRunning;
     private static int clientNumberLimit = 100;
-    private ThreadServer[] threadServers;
+    public ThreadServer[] threadServers;
     private int top;
 
     public ServerState()
@@ -33,7 +33,7 @@ class ServerState
 class ThreadServer extends Thread
 {
     public Object outputLock = new Object();
-    private boolean isConnected;
+    public boolean isConnected;
     private Socket socket;
     private BufferedReader input;
     public BufferedWriter output;
@@ -75,14 +75,14 @@ class ThreadServer extends Thread
         close();
     }
 
-    public void close()
+    private void close()
     {
         try {this.socket.close();}
         catch(IOException e) {}
         isConnected = false;
     }
 
-    void quit()
+    private void quit()
     {
         try
         {
@@ -96,7 +96,7 @@ class ThreadServer extends Thread
         catch(IOException e) {}
     }
 
-    void handleSay() throws IOException //for test
+    private void handleSay() throws IOException //for test
     {
         String text = input.readLine();
         if(text == "xxx")
@@ -148,9 +148,9 @@ class Receptionist extends Thread
 
 public class Server
 {
-    ServerSocket serverSocket;
-    ServerState serverState;
-    Receptionist receptionist;
+    private ServerSocket serverSocket;
+    private ServerState serverState;
+    private Receptionist receptionist;
 
     public void start(int port) throws IOException
     {

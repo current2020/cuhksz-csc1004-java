@@ -8,9 +8,9 @@ import java.nio.charset.StandardCharsets;
 
 public class Client
 {
-    Socket socket;
-    BufferedReader input;
-    BufferedWriter output;
+    private Socket socket;
+    private BufferedReader input;
+    private BufferedWriter output;
 
     public void connect(String serverName, int port) throws IOException
     {
