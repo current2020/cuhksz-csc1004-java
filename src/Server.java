@@ -129,6 +129,7 @@ class Receptionist extends Thread
     {
         this.serverSocket = serverSocket;
         this.serverState = serverState;
+        this.setDaemon(true);
     }
 
     @Override
