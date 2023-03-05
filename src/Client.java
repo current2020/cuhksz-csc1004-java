@@ -40,11 +40,11 @@ public class Client
     {
         String command, text, res = "";
         command = input.readLine();
-        if(command == "QUIT")
+        if(command.equals("QUIT"))
         {
             return "Server is quiting...";
         }
-        else if(command == "REPLY")
+        else if(command.equals("REPLY"))
         {
             text = input.readLine();
             res = "server reply: " + text;

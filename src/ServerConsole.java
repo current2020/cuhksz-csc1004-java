@@ -29,10 +29,15 @@ public class ServerConsole
         while(true)
         {
             command = input.nextLine();
-            if(command == "quit")
+            if(command.equals("quit"))
             {
                 server.quit();
                 break;
+            }
+            else
+            {
+                System.out.println("Unknown Command:");
+                System.out.println(command);
             }
         }
         input.close();

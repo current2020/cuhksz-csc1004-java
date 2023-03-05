@@ -64,7 +64,7 @@ class ThreadServer extends Thread
             try
             {
                 command = input.readLine();
-                if(command == "SAY") handleSay();
+                if(command.equals("SAY")) handleSay();
             }
             catch(IOException e)
             {

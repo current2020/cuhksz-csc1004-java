@@ -31,7 +31,7 @@ public class ClientConsole
         while(true)
         {
             command = input.nextLine();
-            if(command == "say")
+            if(command.equals("say"))
             {
                 String msg;
                 msg = input.nextLine();
@@ -44,7 +44,7 @@ public class ClientConsole
                     e.printStackTrace();
                 }
             }
-            else if(command == "receive")
+            else if(command.equals("receive"))
             {
                 try
                 {
@@ -57,9 +57,14 @@ public class ClientConsole
                     e.printStackTrace();
                 }
             }
-            else if(command == "quit")
+            else if(command.equals("quit"))
             {
                 break;
+            }
+            else
+            {
+                System.out.println("Unknown Command:");
+                System.out.println(command);
             }
         }
         input.close();
