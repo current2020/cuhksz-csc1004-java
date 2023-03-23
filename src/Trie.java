@@ -2,15 +2,15 @@ public class Trie
 {
     private int SIGMA, MAXN, size;
     private int[][] ch;
-    private int[] info;
+    private User[] info;
 
     public Trie(int MAXN, int sigma)
     {
         this.SIGMA = sigma;
         this.MAXN = MAXN;
-        this.ch = new int[MAXN][];
-        this.ch[this.size = 0] = new int[SIGMA];
-        this.info = new int[MAXN];
+        this.ch = new int[this.MAXN][];
+        this.ch[this.size = 0] = new int[this.SIGMA];
+        this.info = new User[this.MAXN];
     }
 
     public Trie(int MAXN)
@@ -18,9 +18,8 @@ public class Trie
         this(MAXN, 64);
     }
 
-    private int idx(char ch)
+    static private int idx(char ch)
     {
-        /* get number index for ch */
         if(ch >= '0' && ch <= '9') //0-9
             return ch - '0';
         if(ch >= 'a' && ch <= 'z') //10 - 35;
@@ -34,14 +33,7 @@ public class Trie
         return -1;
     }
 
-    public void clear()
-    {
-        this.ch = new int[MAXN][];
-        this.ch[this.size = 0] = new int[SIGMA];
-        this.info = new int[MAXN];
-    }
-
-    public void insert(String s, int info)
+    public void insert(String s, User info)
     {
         int len = s.length(), u = 0, c;
         for(int i = 0; i < len; ++i)
@@ -58,15 +50,14 @@ public class Trie
         this.info[u] = info;
     }
 
-    public int find(String s)
+    public User find(String s)
     {
-        // return the node index of S
         int len = s.length(), u = 0, c;
         for(int i = 0; i < len; ++i)
         {
             c = idx(s.charAt(i));
             if(this.ch[u][c] == 0)
-                return 0;
+                return null;
             u = this.ch[u][c];
         }
         return info[u];

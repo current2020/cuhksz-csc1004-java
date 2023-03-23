@@ -1,12 +1,24 @@
 public class User
 {
-    public String username;
-    public String password;
+    private String username;
+    private String password;
+    private int messageId;
 
-    public User(String username, String password)
+    public User(String username, String password, int messageId)
     {
         this.username = username;
         this.password = password;
+        this.messageId = messageId;
+    }
+
+    public User(String username, String password)
+    {
+        this(username, password, 0);
+    }
+
+    public String getUsername()
+    {
+        return username;
     }
 
     private static boolean numberOrLetter(char ch)
@@ -64,5 +76,15 @@ public class User
                 return false;  
         }
         return true;
+    }
+
+    public boolean loginAttempt(String textPassword)
+    {
+        return this.password.equals(textPassword);
+    }
+
+    public int getNextMessageId()
+    {
+        return ++messageId;
     }
 }

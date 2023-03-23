@@ -3,6 +3,7 @@ public class MessageList
     public final Object LOCK;
     private static int MAXN = 5000;
     private Message[] messageList;
+    public Message unknownMessage;
     private int top;
 
     public MessageList()
@@ -10,6 +11,7 @@ public class MessageList
         this.LOCK = new Object();
         this.messageList = new Message[MAXN];
         this.top = 0;
+        unknownMessage = new Message("SERVER", -1, "[unknown message]");
     }
 
     public void addNewMessage(Message newMessage)
@@ -18,42 +20,32 @@ public class MessageList
         top = top+1 == MAXN ? 0 : top+1;
     }
 
-    public Message find(String username, int stepbacks)
+    /** return the newest number-th messages in a list */
+    public Message[] chatQuery(int number)
     {
-        int cur = (top - 1 + MAXN) % MAXN, counter = 0;
-        while(counter < stepbacks)
-        {
-            if(messageList[cur].senderName.equals(username))
-                ++counter;
-            cur = cur == 0 ? MAXN : cur-1;
-        }
-        return messageList[(cur + 1) % MAXN];
-    }
-
-    public String chatQuery(int number)
-    {
-        Message msg;
-        String res = "";
-        number = number <= MAXN ? number : MAXN;
-        int cur = (top - number + MAXN) % MAXN;
+        Message[] res = new Message[number];
+        number = number > MAXN ? MAXN : number;
+        int cur = top < number ? top-number+MAXN : top-number;
+        int resTop = 0;
         while(cur != top)
         {
-            msg = messageList[cur];
-            if(msg == null) continue;
-            res += msg.senderName + ' ' + msg.getSendingTime() + '\n';
-            if(msg.isRetreated)
-            {
-                res += "[Retreated]\n";
-            }
-            else
-            {
-                res += msg.text + '\n';
-                if(msg.isEdited)
-                    res += "[Edited]\n";
-            }
-            res += '\n';
+            if(messageList[cur] != null)
+                res[resTop++] = messageList[cur];
             cur = cur+1 == MAXN ? 0 : cur+1;
         }
         return res;
+    }
+
+    /** return the certain message, return null if not found */
+    public Message find(String senderName, int id)
+    {
+        int cur = top == 0 ? MAXN-1 : top-1;
+        while(cur != top)
+        {
+            if(messageList[cur].is(senderName, id))
+                return messageList[cur];
+            cur = cur == 0 ? MAXN-1 : cur-1;
+        }
+        return null;
     }
 }

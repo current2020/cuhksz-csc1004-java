@@ -9,20 +9,27 @@ import java.nio.charset.StandardCharsets;
 
 class ServerState
 {
-    public boolean isRunning;
     private static int clientNumberLimit = 100;
-    public ThreadServer[] threadServers;
     private int top;
+    public ThreadServer[] threadServers;
+    public UserList userList;
 
     public ServerState()
     {
-        isRunning = true;
         threadServers = new ThreadServer[clientNumberLimit];
         top = 0;
+        userList = new UserList();
     }
 
     public boolean addClient(ThreadServer newThreadServer)
     {
+        for(int i = 0; i < top; ++i)
+        {
+            if(threadServers[i].isConnected())
+                continue;
+            threadServers[i] = newThreadServer;
+            return true;
+        }
         if(top == clientNumberLimit)
             return false;
         threadServers[top++] = newThreadServer;
@@ -32,91 +39,192 @@ class ServerState
 
 class ThreadServer extends Thread
 {
-    public Object outputLock = new Object();
-    public boolean isConnected;
+    private Object outputLock = new Object();
     private Socket socket;
     private BufferedReader input;
-    public BufferedWriter output;
+    private BufferedWriter output;
     private ServerState serverState;
+    private boolean isConnected;
+    private boolean isLoggedIN;
+    private User user;
+    private MessageList messageList;
 
     public ThreadServer(Socket socket, ServerState serverState)
     {
         this.serverState = serverState;
         this.socket = socket;
         isConnected = true;
+        isLoggedIN = false;
         try
         {
             this.input = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
             this.output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
         }
-        catch(IOException e)
-        {
-            close();
-        }
+        catch(IOException e) {close();}
     }
-
+    
     @Override
     public void run()
     {
         String command;
-        while(isConnected&&serverState.isRunning)
+        try
         {
-            try
+            while(!isLoggedIN)
             {
                 command = input.readLine();
-                if(command.equals("SAY")) handleSay();
+                if(command.equals("~REGISTER"))
+                    handleRegister();
+                else if(command.equals("~LOGIN"))
+                    handleLogin();
             }
-            catch(IOException e)
+            while(isConnected)
             {
-                close();
+                command = input.readLine();
+                if(command.equals("~MESSAGE"))
+                    handleMessage();
+                else if(command.equals("~QUOTATION"))
+                    handleQuotation();
+                else if(command.equals("~EDIT"))
+                    handleEdit();
+                else if(command.equals("~RETREAT"))
+                    handleRetreat();
             }
         }
-        if(isConnected) quit();
-        close();
+        catch(IOException e) {close();}
     }
 
-    private void close()
+    public boolean isConnected() { return this.isConnected; }
+
+    public boolean isLoggedIN() { return this.isLoggedIN; }
+    
+    public void close()
     {
         try {this.socket.close();}
         catch(IOException e) {}
         isConnected = false;
+        isLoggedIN = false;
+    }
+    
+    public void quit()
+    {
+        send("QUIT");
+        close();
     }
 
-    private void quit()
+    private void start(User user)
+    {
+        isLoggedIN = true;
+        this.user = user;
+        this.messageList = new MessageList();
+    }
+
+    public void send(String command, String ... messages)
     {
         try
         {
             synchronized(outputLock)
             {
-                output.write("QUIT");
+                output.write(command);
                 output.newLine();
+                for(String message: messages)
+                {
+                    output.write(message);
+                    output.newLine();
+                }
                 output.flush();
             }
         }
-        catch(IOException e) {}
+        catch(IOException e) {close();}
     }
 
-    private void handleSay() throws IOException //for test
+    private void broadCast(String command, String ... messages)
     {
-        String text = input.readLine();
-        if(text == "xxx")
+        for(ThreadServer threadServer: serverState.threadServers)
         {
-            synchronized(outputLock)
-            {
-                output.write("UNK");
-                output.newLine();
-                output.flush();
-            }
+            if(threadServer == null) return;
+            if(!threadServer.isLoggedIN) continue;
+            threadServer.send(command, messages);
+        }
+    }
+
+    private void handleRegister() throws IOException
+    {
+        String username = input.readLine();
+        String password = input.readLine();
+        try
+        {
+            serverState.userList.registerAttempt(username, password);
+        }
+        catch(LoginException e)
+        {
+            send("~REGISTER", Integer.toString(e.getErrorcode()));
             return;
         }
-        synchronized(outputLock)
+        send("~REGISTER", "0");
+    }
+
+    private void handleLogin() throws IOException
+    {
+        String username = input.readLine();
+        String password = input.readLine();
+        User user;
+        try
         {
-            output.write("REPLY");
-            output.newLine();
-            output.write("I have received.");
-            output.newLine();
-            output.flush();
+            user = serverState.userList.loginAttempt(username, password);
         }
+        catch(LoginException e)
+        {
+            send("~LOGIN", Integer.toString(e.getErrorcode()));
+            return;
+        }
+        send("~LOGIN", "0");
+        start(user);
+    }
+
+
+    private void handleMessage() throws IOException
+    {
+        String text = input.readLine();
+        int messageId = user.getNextMessageId();
+        broadCast("~MESSAGE", user.getUsername(), Integer.toString(messageId), text);
+        messageList.addNewMessage(new Message(messageId));
+    }
+
+    private void handleQuotation() throws IOException
+    {
+        String text = input.readLine();
+        String targetSenderName = input.readLine();
+        String targetIdString = input.readLine();
+        int messageId = user.getNextMessageId();
+        broadCast("~QUOTATION", user.getUsername(), Integer.toString(messageId), text, targetSenderName, targetIdString);
+        messageList.addNewMessage(new Message(messageId));
+    }
+
+    private void handleEdit() throws IOException
+    {
+        int targetIdString = Integer.parseInt(input.readLine());
+        String text = input.readLine();
+        Message message = messageList.find(user.getUsername(), targetIdString);
+        if(message == null || (!message.withinTime()))
+        {
+            send("~REPLY", "fail");
+            return;
+        }
+        send("~REPLY", "success");
+        broadCast("~EDIT", user.getUsername(), Integer.toString(targetIdString), text);
+    }
+
+    private void handleRetreat() throws IOException
+    {
+        int targetIdString = Integer.parseInt(input.readLine());
+        Message message = messageList.find(user.getUsername(), targetIdString);
+        if(message == null || (!message.withinTime()))
+        {
+            send("~REPLY", "fail");
+            return;
+        }
+        send("~REPLY", "success");
+        broadCast("~RETREAT", user.getUsername(), Integer.toString(targetIdString));
     }
 }
 
@@ -135,14 +243,22 @@ class Receptionist extends Thread
     @Override
     public void run()
     {
-        while(serverState.isRunning)
+        while(true)
         {
             Socket newSocket;
             try {newSocket = serverSocket.accept();}
             catch(IOException e) {continue;}
             ThreadServer newThreadServer = new ThreadServer(newSocket, serverState);
-            serverState.addClient(newThreadServer);
-            newThreadServer.start();
+            if(!newThreadServer.isConnected()) continue;
+            if(serverState.addClient(newThreadServer))
+            {
+                newThreadServer.send("~CONNECT", "success");
+            }
+            else
+            {
+                newThreadServer.send("~CONNECT", "fail");
+                newThreadServer.close();
+            }
         }
     }
 }
@@ -163,6 +279,7 @@ public class Server
 
     public void quit()
     {
-        serverState.isRunning = false;
+        for(ThreadServer client: serverState.threadServers)
+            client.quit();
     }
 }
