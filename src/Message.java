@@ -28,9 +28,10 @@ public class Message
     }
 
     /** USE FOR SERVER ONLY */
-    public Message(int id)
+    public Message(String senderName, int id)
     {
         this.isRetreated = true;
+        this.senderName = senderName;
         this.id = id;
         this.sendingTime = new Date();
     }
