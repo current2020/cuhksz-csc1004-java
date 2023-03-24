@@ -23,7 +23,7 @@ public class Trie
         if(ch >= '0' && ch <= '9') //0-9
             return ch - '0';
         if(ch >= 'a' && ch <= 'z') //10 - 35;
-            return ch = 'a' + 10;
+            return ch - 'a' + 10;
         if(ch >= 'A' && ch <= 'Z') //36 - 61;
             return ch - 'A' + 36;
         if(ch == '_') //62
