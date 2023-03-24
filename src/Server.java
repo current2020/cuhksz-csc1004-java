@@ -187,7 +187,7 @@ class ThreadServer extends Thread
         String text = input.readLine();
         int messageId = user.getNextMessageId();
         broadCast("~MESSAGE", user.getUsername(), Integer.toString(messageId), text);
-        messageList.addNewMessage(new Message(messageId));
+        messageList.addNewMessage(new Message(user.getUsername(), messageId));
     }
 
     private void handleQuotation() throws IOException
@@ -197,7 +197,7 @@ class ThreadServer extends Thread
         String targetIdString = input.readLine();
         int messageId = user.getNextMessageId();
         broadCast("~QUOTATION", user.getUsername(), Integer.toString(messageId), text, targetSenderName, targetIdString);
-        messageList.addNewMessage(new Message(messageId));
+        messageList.addNewMessage(new Message(user.getUsername(), messageId));
     }
 
     private void handleEdit() throws IOException
@@ -216,15 +216,15 @@ class ThreadServer extends Thread
 
     private void handleRetreat() throws IOException
     {
-        int targetIdString = Integer.parseInt(input.readLine());
-        Message message = messageList.find(user.getUsername(), targetIdString);
+        int targetId = Integer.parseInt(input.readLine());
+        Message message = messageList.find(user.getUsername(), targetId);
         if(message == null || (!message.withinTime()))
         {
             send("~REPLY", "fail");
             return;
         }
         send("~REPLY", "success");
-        broadCast("~RETREAT", user.getUsername(), Integer.toString(targetIdString));
+        broadCast("~RETREAT", user.getUsername(), Integer.toString(targetId));
     }
 }
 

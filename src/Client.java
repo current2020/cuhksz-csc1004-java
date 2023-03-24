@@ -221,7 +221,7 @@ public class Client
 
     public void sendRetreat(int targetId) throws IOException
     {
-        send("RETREAT", Integer.toString(targetId));
+        send("~RETREAT", Integer.toString(targetId));
     }
 
     public Message[] chatQuery(int number)
