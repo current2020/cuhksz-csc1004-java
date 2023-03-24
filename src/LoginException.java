@@ -8,8 +8,8 @@ public class LoginException extends RuntimeException
         "Username being too short", //1
         "Username being too long", //2
         "Username syntax error", //3
-        "Password being too long", //4
-        "Password being too short", //5
+        "Password being too short", //4
+        "Password being too long", //5
         "Password syntax error", //6
         "Username occupied", //7
         "Username does not exist", //8
