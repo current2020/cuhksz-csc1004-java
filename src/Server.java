@@ -259,6 +259,7 @@ class Receptionist extends Thread
                 newThreadServer.send("~CONNECT", "fail");
                 newThreadServer.close();
             }
+            newThreadServer.start();
         }
     }
 }
@@ -280,6 +281,10 @@ public class Server
     public void quit()
     {
         for(ThreadServer client: serverState.threadServers)
+        {
+            if(client == null) continue;
+            if(!client.isConnected()) continue;
             client.quit();
+        }
     }
 }
