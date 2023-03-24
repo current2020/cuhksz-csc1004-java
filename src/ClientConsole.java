@@ -11,6 +11,7 @@ public class ClientConsole
         String serverName;
         String command;
         int port;
+
         while(true)
         {
             System.out.print("ServerName: ");
@@ -20,6 +21,7 @@ public class ClientConsole
             try
             {
                 client.connect(serverName, port);
+                System.out.println("Connection success!");
                 break;
             }
             catch(IOException e)
@@ -27,46 +29,131 @@ public class ClientConsole
                 e.printStackTrace();
                 System.out.println("Connection Failed...");
             }
+            catch(ServerException e)
+            {
+                System.out.println(e.getErrorMessage());
+            }
         }
+
         while(true)
         {
             command = input.nextLine();
-            if(command.equals("say"))
+            if(command.equals("register"))
             {
-                String msg;
-                msg = input.nextLine();
+                String username, password;
+                System.out.print("username: ");
+                username = input.nextLine();
+                System.out.print("password: ");
+                password = input.nextLine();
                 try
                 {
-                    client.say(msg);
+                    client.register(username, password);
+                    System.out.println("register success!");
                 }
                 catch(IOException e)
                 {
                     e.printStackTrace();
+                    input.close();
+                    return;
+                }
+                catch(LoginException e)
+                {
+                    System.out.print(e.getErrorMessage());
+                }
+                catch(ServerException e)
+                {
+                    System.out.print(e.getErrorMessage());
+                    input.close();
+                    return;
                 }
             }
-            else if(command.equals("receive"))
+            else if(command.equals("login"))
             {
+                String username, password;
+                System.out.print("username: ");
+                username = input.nextLine();
+                System.out.print("password: ");
+                password = input.nextLine();
                 try
                 {
-                    String msg;
-                    msg = client.receive();
-                    System.out.println(msg);
+                    client.login(username, password);
+                    System.out.println("login success!");
+                    break;
                 }
                 catch(IOException e)
                 {
                     e.printStackTrace();
+                    input.close();
+                    return;
                 }
-            }
-            else if(command.equals("quit"))
-            {
-                break;
-            }
-            else
-            {
-                System.out.println("Unknown Command:");
-                System.out.println(command);
+                catch(LoginException e)
+                {
+                    System.out.print(e.getErrorMessage());
+                }
+                catch(ServerException e)
+                {
+                    System.out.print(e.getErrorMessage());
+                    input.close();
+                    return;
+                }
             }
         }
-        input.close();
+
+        while(true)
+        {
+            command = input.nextLine();
+            try
+            {
+                if(command.equals("message"))
+                {
+                    System.out.print("text: ");
+                    String text = input.nextLine();
+                    client.sendMessage(text);
+                }
+                else if(command.equals("quotation"))
+                {
+                    System.out.print("text: ");
+                    String text = input.nextLine();
+                    System.out.print("targetSenderName: ");
+                    String targetSenderName = input.nextLine();
+                    System.out.print("targetId: ");
+                    int targetId = Integer.parseInt(input.nextLine());
+                    client.sendQuotaion(text, targetSenderName, targetId);
+                }
+                else if(command.equals("edit"))
+                {
+                    System.out.print("targetId: ");
+                    int targetId = Integer.parseInt(input.nextLine());
+                    System.out.print("text: ");
+                    String text = input.nextLine();
+                    client.sendEdit(targetId, text);
+                }
+                else if(command.equals("retreat"))
+                {
+                    System.out.print("targetId: ");
+                    int targetId = Integer.parseInt(input.nextLine());
+                    client.sendRetreat(targetId);
+                }
+                else if(command.equals("chats"))
+                {
+                    for(Message msg: client.chatQuery(10))
+                    {
+                        if(msg == null)
+                            continue;
+                        System.out.println(msg.toStringWithId());
+                    }
+                }
+                else if(command.equals("notification"))
+                {
+                    System.out.println(client.readNotification());
+                }
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+                input.close();
+                return;
+            }
+        }
     }
 }
