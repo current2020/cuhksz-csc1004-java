@@ -114,11 +114,9 @@ public class ClientConsole
                 {
                     System.out.print("text: ");
                     String text = input.nextLine();
-                    System.out.print("targetSenderName: ");
-                    String targetSenderName = input.nextLine();
                     System.out.print("targetId: ");
                     int targetId = Integer.parseInt(input.nextLine());
-                    client.sendQuotaion(text, targetSenderName, targetId);
+                    client.sendQuotaion(text, targetId);
                 }
                 else if(command.equals("edit"))
                 {

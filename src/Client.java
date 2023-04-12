@@ -80,40 +80,36 @@ class Receiver extends Thread
 
     private void handleMessage() throws IOException
     {
-        String senderName = input.readLine();
         int id = Integer.parseInt(input.readLine());
+        String senderName = input.readLine();
         String text = input.readLine();
-        messageList.addNewMessage(new Message(senderName, id, text));
+        messageList.addNewMessage(new Message(id, senderName, text));
     }
 
     private void handleQuotation() throws IOException
     {
-        String senderName = input.readLine();
         int id = Integer.parseInt(input.readLine());
+        String senderName = input.readLine();
         String text = input.readLine();
-        String targetSenderName = input.readLine();
         int targetId = Integer.parseInt(input.readLine());
-        Message quotation = messageList.find(targetSenderName, targetId);
-        if(quotation == null)
-            quotation = messageList.unknownMessage;
-        messageList.addNewMessage(new Message(senderName, id, text, quotation));
+        Message quotation = messageList.find(targetId);
+        if(quotation == null) quotation = messageList.unknownMessage;
+        messageList.addNewMessage(new Message(id, senderName, text, quotation));
     }
 
     private void handleEdit() throws IOException
     {
-        String targetSenderName = input.readLine();
         int targetId = Integer.parseInt(input.readLine());
         String text = input.readLine();
-        Message target = messageList.find(targetSenderName, targetId);
+        Message target = messageList.find(targetId);
         if(target == null) return;
         target.edit(text);
     }
 
     private void handleRetreat() throws IOException
     {
-        String targetSenderName = input.readLine();
         int targetId = Integer.parseInt(input.readLine());
-        Message target = messageList.find(targetSenderName, targetId);
+        Message target = messageList.find(targetId);
         if(target == null) return;
         target.retreat();
     }
@@ -209,9 +205,9 @@ public class Client
         send("~MESSAGE", text);
     }
 
-    public void sendQuotaion(String text, String targetSenderName, int targetId) throws IOException
+    public void sendQuotaion(String text, int targetId) throws IOException
     {
-        send("~QUOTATION", text, targetSenderName, Integer.toString(targetId));
+        send("~QUOTATION", text, Integer.toString(targetId));
     }
 
     public void sendEdit(int targetId, String text) throws IOException

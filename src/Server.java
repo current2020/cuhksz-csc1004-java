@@ -184,47 +184,48 @@ class ThreadServer extends Thread
 
     private void handleMessage() throws IOException
     {
+        int messageId = messageList.getNextId();
         String text = input.readLine();
-        int messageId = user.getNextMessageId();
-        broadCast("~MESSAGE", user.getUsername(), Integer.toString(messageId), text);
-        messageList.addNewMessage(new Message(user.getUsername(), messageId));
+        broadCast("~MESSAGE", Integer.toString(messageId), user.getUsername(), text);
+        synchronized(messageList.LOCK) { messageList.addNewMessage(new Message(messageId, user.getUsername(), text)); }
     }
 
     private void handleQuotation() throws IOException
     {
+        int messageId = messageList.getNextId();
         String text = input.readLine();
-        String targetSenderName = input.readLine();
-        String targetIdString = input.readLine();
-        int messageId = user.getNextMessageId();
-        broadCast("~QUOTATION", user.getUsername(), Integer.toString(messageId), text, targetSenderName, targetIdString);
-        messageList.addNewMessage(new Message(user.getUsername(), messageId));
+        int targetId = Integer.parseInt(input.readLine());
+        Message quotation = messageList.find(targetId);
+        if(quotation == null) quotation = messageList.unknownMessage;
+        broadCast("~QUOTATION", Integer.toString(messageId), user.getUsername(), text, Integer.toString(targetId));
+        synchronized(messageList.LOCK) { messageList.addNewMessage(new Message(messageId, user.getUsername(), text, quotation)); }
     }
 
     private void handleEdit() throws IOException
     {
-        int targetIdString = Integer.parseInt(input.readLine());
+        int targetId = Integer.parseInt(input.readLine());
         String text = input.readLine();
-        Message message = messageList.find(user.getUsername(), targetIdString);
+        Message message = messageList.find(targetId);
         if(message == null || (!message.withinTime()))
         {
             send("~REPLY", "fail");
             return;
         }
         send("~REPLY", "success");
-        broadCast("~EDIT", user.getUsername(), Integer.toString(targetIdString), text);
+        broadCast("~EDIT", Integer.toString(targetId), text);
     }
 
     private void handleRetreat() throws IOException
     {
         int targetId = Integer.parseInt(input.readLine());
-        Message message = messageList.find(user.getUsername(), targetId);
+        Message message = messageList.find(targetId);
         if(message == null || (!message.withinTime()))
         {
             send("~REPLY", "fail");
             return;
         }
         send("~REPLY", "success");
-        broadCast("~RETREAT", user.getUsername(), Integer.toString(targetId));
+        broadCast("~RETREAT", Integer.toString(targetId));
     }
 }
 

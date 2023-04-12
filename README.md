@@ -1,6 +1,6 @@
-## Bi-Weekly Report 22-3-24
+## Bi-Weekly Report 23-4-7
 
-### Zheng Hanjun/郑晗骏/122090797
+Zheng Hanjun/郑晗骏/122090797
 
 ### Github Link:
 
@@ -16,29 +16,27 @@ I'm going to finish the ChatRoom java project. It will support:
 
 - **Week 1 and 2: **Write a simple ChatRoom that runs on console and uses commands
 
-- **Week 3 and 4: **Learning a lot of knowledge of java, including java.socket, java.swing and multi-thread. And write Client class and Server class using these newly-learnt knowledge.
+- **Week 3 and 4: **Learning a lot of knowledge of java, including java.socket and multi-thread. And write Client class and Server class using these newly-learnt knowledge.
 
-- **Week 5 and 6: ** Finish all the basic code of the ChatRoom, and make a GUI for it.
+- **Week 5 and 6: ** Finish all the basic code of the ChatRoom.
 
-- **Week 7 and 8: **Learning knowledge about Database like MySQL, and allow my ChatRoom to store chat history. Learning knowledge about encoding and support Emoji
+- **Week 7 and 8: **Learning knowledge about database like MySQL and java.swing.
 
-- **Week 9 and 10: **Finish the python project
+- **Week 9 and 10: **Implement a database for my ChatRoom.
 
-- **Week 11 and 12: **submit the python and java projects.
+- **Week 11 and 12: **Make a GUI for my ChatRoom.
+
+- **Week 13 and 14: **Finish the python Project.
 
 ### 2. Progress Report
 
-- **Java Project (50% finished): **Most basic functions completed including multi-client chat, registration and login system, edit/retreat/quotation system. User can now use all functions above in a console based UI.
+- **Java Project (75% finished): **Basic classes and functions for the ChatRoom have been completed. database has been implement to support Registration, Login system and Chat History.
 - **Python Project (0% finished): **Have not started yet 
 
 ### 3. Works finished in the past two weeks
 
-Complete all basic java classes needed for this project, and write two console UI for testing them.
-
-test all functions written yet and fix a few bugs.
+Learning knowledge about database, choose a database and implement it for my chatroom to store user information and chat history.
 
 ### 4. Works to be done in the following two weeks
 
-Implement Data Base for this project, so that server can restore user information after shutdown and reboot and user can have chat history.
-
-Design and write part of Client GUI.
+Design and make a GUI for my ChatRoom.

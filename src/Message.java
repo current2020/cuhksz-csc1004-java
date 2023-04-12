@@ -3,45 +3,34 @@ import java.util.Date;
 public class Message
 {
     private static long editTimeLimitMillisecond = 120000;
-    public String senderName;
     private int id;
+    private String senderName;
     private String text;
-    private Message quotation;
     private Date sendingTime;
-    public boolean isRetreated;
-    public boolean isEdited;
+    private Message quotation;
+    private boolean isRetreated;
+    private boolean isEdited;
 
-    public Message(String senderName, int id, String text)
+    public Message(int id, String senderName, String text)
     {
         this.isRetreated = false;
         this.isEdited = false;
-        this.senderName = senderName;
         this.id = id;
+        this.senderName = senderName;
         this.text = text;
         this.sendingTime = new Date();
     }
 
-    public Message(String senderName, int id, String text, Message quotation)
+    public Message(int id, String senderName, String text, Message quotation)
     {
-        this(senderName, id, text);
+        this(id, senderName, text);
         this.quotation = quotation;
     }
 
-    /** USE FOR SERVER ONLY */
-    public Message(String senderName, int id)
-    {
-        this.isRetreated = true;
-        this.senderName = senderName;
-        this.id = id;
-        this.sendingTime = new Date();
-    }
-
-    public boolean is(String senderName, int id)
-    {
-        if(this.senderName.equals(senderName) && this.id == id)
-            return true;
-        return false;
-    }
+    public int getId() { return id; }
+    public String getSenderName() { return senderName; }
+    public boolean isEdited() { return isEdited; }
+    public boolean isRetreated() { return isRetreated; }
 
     /** return a shorter string within lengthLimit */
     private static String fix(String str, int lengthLimit)

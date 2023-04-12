@@ -2,18 +2,11 @@ public class User
 {
     private String username;
     private String password;
-    private int messageId;
-
-    public User(String username, String password, int messageId)
-    {
-        this.username = username;
-        this.password = password;
-        this.messageId = messageId;
-    }
 
     public User(String username, String password)
     {
-        this(username, password, 0);
+        this.username = username;
+        this.password = password;
     }
 
     public String getUsername()
@@ -81,10 +74,5 @@ public class User
     public boolean loginAttempt(String textPassword)
     {
         return this.password.equals(textPassword);
-    }
-
-    public int getNextMessageId()
-    {
-        return ++messageId;
     }
 }
