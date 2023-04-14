@@ -13,12 +13,25 @@ class ServerState
     private int top;
     public ThreadServer[] threadServers;
     public UserList userList;
+    public ChatHistory chatHistory;
 
     public ServerState()
     {
         threadServers = new ThreadServer[clientNumberLimit];
         top = 0;
         userList = new UserList();
+        chatHistory = new ChatHistory();
+    }
+
+    public void close()
+    {
+        for(ThreadServer client: threadServers)
+        {
+            if(client == null) continue;
+            if(!client.isConnected()) continue;
+            client.quit();
+        }
+        chatHistory.close();
     }
 
     public boolean addClient(ThreadServer newThreadServer)
@@ -113,6 +126,7 @@ class ThreadServer extends Thread
 
     private void start(User user)
     {
+        serverState.chatHistory.restore(this);
         isLoggedIN = true;
         this.user = user;
         this.messageList = new MessageList();
@@ -184,21 +198,19 @@ class ThreadServer extends Thread
 
     private void handleMessage() throws IOException
     {
-        int messageId = messageList.getNextId();
         String text = input.readLine();
+        int messageId = serverState.chatHistory.newMessage(user.getUsername(), text, 0);
+        messageList.addNewMessage(new Message(messageId));
         broadCast("~MESSAGE", Integer.toString(messageId), user.getUsername(), text);
-        synchronized(messageList.LOCK) { messageList.addNewMessage(new Message(messageId, user.getUsername(), text)); }
     }
 
     private void handleQuotation() throws IOException
     {
-        int messageId = messageList.getNextId();
         String text = input.readLine();
         int targetId = Integer.parseInt(input.readLine());
-        Message quotation = messageList.find(targetId);
-        if(quotation == null) quotation = messageList.unknownMessage;
+        int messageId = serverState.chatHistory.newMessage(user.getUsername(), text, targetId);
+        messageList.addNewMessage(new Message(messageId));
         broadCast("~QUOTATION", Integer.toString(messageId), user.getUsername(), text, Integer.toString(targetId));
-        synchronized(messageList.LOCK) { messageList.addNewMessage(new Message(messageId, user.getUsername(), text, quotation)); }
     }
 
     private void handleEdit() throws IOException
@@ -213,6 +225,7 @@ class ThreadServer extends Thread
         }
         send("~REPLY", "success");
         broadCast("~EDIT", Integer.toString(targetId), text);
+        serverState.chatHistory.editMessage(targetId, text);
     }
 
     private void handleRetreat() throws IOException
@@ -226,6 +239,7 @@ class ThreadServer extends Thread
         }
         send("~REPLY", "success");
         broadCast("~RETREAT", Integer.toString(targetId));
+        serverState.chatHistory.retreatMessage(targetId);
     }
 }
 
@@ -281,11 +295,6 @@ public class Server
 
     public void quit()
     {
-        for(ThreadServer client: serverState.threadServers)
-        {
-            if(client == null) continue;
-            if(!client.isConnected()) continue;
-            client.quit();
-        }
+        serverState.close();
     }
 }

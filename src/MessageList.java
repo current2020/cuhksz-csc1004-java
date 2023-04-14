@@ -5,14 +5,12 @@ public class MessageList
     public Message unknownMessage;
     private Message[] messageList;
     private int top;
-    private int idCounter;
 
     public MessageList()
     {
         this.LOCK = new Object();
         this.messageList = new Message[MAXN];
         this.top = 0;
-        this.idCounter = 0;
         unknownMessage = new Message(0, "SERVER", "[unknown message]");
     }
 
@@ -42,17 +40,12 @@ public class MessageList
     public Message find(int id)
     {
         int cur = top == 0 ? MAXN-1 : top-1;
-        while(cur != top)
+        while(cur != top && messageList[cur] != null)
         {
             if(messageList[cur].getId() == id)
                 return messageList[cur];
             cur = cur == 0 ? MAXN-1 : cur-1;
         }
         return null;
-    }
-
-    public int getNextId()
-    {
-        return ++idCounter;
     }
 }

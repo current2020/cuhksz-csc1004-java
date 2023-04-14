@@ -6,25 +6,36 @@ public class Message
     private int id;
     private String senderName;
     private String text;
-    private Date sendingTime;
     private Message quotation;
     private boolean isRetreated;
     private boolean isEdited;
+    private Date sendingTime;
 
-    public Message(int id, String senderName, String text)
+    public Message(int id, String senderName, String text, Message quotation, boolean isRetreated, boolean isEdited, Date sendinTime)
     {
-        this.isRetreated = false;
-        this.isEdited = false;
         this.id = id;
         this.senderName = senderName;
         this.text = text;
-        this.sendingTime = new Date();
+        this.quotation = quotation;
+        this.isRetreated = isRetreated;
+        this.isEdited = isEdited;
+        this.sendingTime = sendinTime;
     }
-
+    
     public Message(int id, String senderName, String text, Message quotation)
     {
-        this(id, senderName, text);
-        this.quotation = quotation;
+        this(id, senderName, text, quotation, false, false, new Date());
+    }
+
+    public Message(int id, String senderName, String text)
+    {
+        this(id, senderName, text, null);
+    }
+
+    /** for server, only store Id and sendingTime */
+    public Message(int id)
+    {
+        this(id, null, null);
     }
 
     public int getId() { return id; }

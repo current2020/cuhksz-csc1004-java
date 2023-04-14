@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 class Notification
 {
@@ -69,6 +70,8 @@ class Receiver extends Thread
                     handleReply();
                 else if(command.equals("~QUIT"))
                     handleQuit();
+                else if(command.equals("~BEGIN-CHATS"))
+                    handleRestore();
             }
             catch(IOException e)
             {
@@ -125,6 +128,42 @@ class Receiver extends Thread
     {
         notification.newNotification("server is quiting...");
         isRunning = false;
+    }
+
+    private void handleRestore() throws IOException
+    {
+        String command = input.readLine();
+        int id;
+        String senderName;
+        String text;
+        int quotationId;
+        Message quotation;
+        boolean isRetreated;
+        boolean isEdited;
+        Date sendingTime;
+        while(command.equals("~CHAT"))
+        {
+            id = Integer.parseInt(input.readLine());
+            senderName = input.readLine();
+            text = input.readLine();
+            quotationId = Integer.parseInt(input.readLine());
+            if(quotationId == 0)
+            {
+                quotation = null;
+            }
+            else
+            {
+                quotation = messageList.find(quotationId);
+                if(quotation == null) quotation = messageList.unknownMessage;
+            }
+            isRetreated = input.readLine().equals("1");
+            isEdited = input.readLine().equals("1");
+            sendingTime = new Date(Long.parseLong(input.readLine()));
+            messageList.addNewMessage(new Message(id, senderName, text, quotation, isRetreated, isEdited, sendingTime));
+            command = input.readLine();
+        }
+        if(!command.equals("~END-CHATS"))
+            throw new IOException();
     }
 }
 
