@@ -218,7 +218,7 @@ class ThreadServer extends Thread
         int targetId = Integer.parseInt(input.readLine());
         String text = input.readLine();
         Message message = messageList.find(targetId);
-        if(message == null || (!message.withinTime()))
+        if(message == null || (!message.withinTime()) || (!user.getUsername().equals(message.getSenderName())))
         {
             send("~REPLY", "fail");
             return;
@@ -232,7 +232,7 @@ class ThreadServer extends Thread
     {
         int targetId = Integer.parseInt(input.readLine());
         Message message = messageList.find(targetId);
-        if(message == null || (!message.withinTime()))
+        if(message == null || (!message.withinTime()) || (!user.getUsername().equals(message.getSenderName())))
         {
             send("~REPLY", "fail");
             return;
