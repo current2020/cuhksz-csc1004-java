@@ -58,20 +58,7 @@ class Receiver extends Thread
             try
             {
                 command = input.readLine();
-                if(command.equals("~MESSAGE"))
-                    handleMessage();
-                else if(command.equals("~QUOTATION"))
-                    handleQuotation();
-                else if(command.equals("~EDIT"))
-                    handleEdit();
-                else if(command.equals("~RETREAT"))
-                    handleRetreat();
-                else if(command.equals("~REPLY"))
-                    handleReply();
-                else if(command.equals("~QUIT"))
-                    handleQuit();
-                else if(command.equals("~BEGIN-CHATS"))
-                    handleRestore();
+                handle(command);
             }
             catch(IOException e)
             {
@@ -79,6 +66,26 @@ class Receiver extends Thread
                 isRunning = false;
             }
         }
+    }
+
+    private void handle(String command) throws IOException
+    {
+        if(command == null)
+            throw new IOException();
+        else if(command.equals("~MESSAGE"))
+            handleMessage();
+        else if(command.equals("~QUOTATION"))
+            handleQuotation();
+        else if(command.equals("~EDIT"))
+            handleEdit();
+        else if(command.equals("~RETREAT"))
+            handleRetreat();
+        else if(command.equals("~REPLY"))
+            handleReply();
+        else if(command.equals("~QUIT"))
+            handleQuit();
+        else if(command.equals("~BEGIN-CHATS"))
+            handleRestore();
     }
 
     private void handleMessage() throws IOException
@@ -161,6 +168,11 @@ class Receiver extends Thread
             sendingTime = new Date(Long.parseLong(input.readLine()));
             messageList.addNewMessage(new Message(id, senderName, text, quotation, isRetreated, isEdited, sendingTime));
             command = input.readLine();
+        }
+        if(command.equals("~QUIT"))
+        {
+            handleQuit();
+            return;
         }
         if(!command.equals("~END-CHATS"))
             throw new IOException();
