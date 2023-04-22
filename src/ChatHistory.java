@@ -3,6 +3,7 @@ import java.util.Date;
 
 public class ChatHistory 
 {
+    private static final String DBURL = "jdbc:sqlite:.\\data\\CHAT_INFO.db";
     private Connection connection;
     private int idCounter;
 
@@ -14,7 +15,7 @@ public class ChatHistory
         try
         {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:CHAT_INFO.db");
+            connection = DriverManager.getConnection(DBURL);
             statement = connection.createStatement();
 
             sql = "CREATE TABLE IF NOT EXISTS STATS (" + 
@@ -56,15 +57,8 @@ public class ChatHistory
 
     public void close()
     {
-        Statement statement;
-        String sql;
         try
         {
-            statement = connection.createStatement();
-            sql = "UPDATE STATS SET IDCOUNTER = %d WHERE ID = 0;";
-            sql = String.format(sql, idCounter);
-            statement.executeUpdate(sql);
-            statement.close();
             connection.close();
         }
         catch(Exception e)
@@ -81,10 +75,16 @@ public class ChatHistory
         try
         {
             statement = connection.createStatement();
+            
+            sql = "UPDATE STATS SET IDCOUNTER = %d WHERE ID = 0;";
+            sql = String.format(sql, idCounter);
+            statement.executeUpdate(sql);
+
             sql = "INSERT INTO CHATS (ID, SENDERNAME, TEXT, QUOTATION, ISRETREATED, ISEDITED, SENDINGTIME) " +
                   "VALUES (%d, '%s', '%s', %d, %d, %d, %d);";
             sql = String.format(sql, idCounter, senderName, toSafeText(text), quotation, 0, 0, (new Date()).getTime());
             statement.executeUpdate(sql);
+
             statement.close();
         }
         catch(Exception e)

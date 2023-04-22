@@ -2,6 +2,7 @@ import java.sql.*;
 
 public class UserList
 {
+    private static final String DBURL = "jdbc:sqlite:.\\data\\USER_INFO.db";
     private Trie namepool;
     private int top;
     private static int userNumberLimit = 100;
@@ -25,7 +26,7 @@ public class UserList
         try
         {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:USER_INFO.db");
+            connection = DriverManager.getConnection(DBURL);
             statement = connection.createStatement();
 
             sql = "CREATE TABLE IF NOT EXISTS USERS (" + 
