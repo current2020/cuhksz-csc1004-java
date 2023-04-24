@@ -161,7 +161,6 @@ public class ChatPanel extends JPanel implements ActionListener
         displayPanel.setPreferredSize(new Dimension(1047, 80*MessageDisplayCount));
         displayPanel.add(newMessageDisplay);
         messageDisplays.put(newMessage.getId(), newMessageDisplay);
-        System.out.println(newMessage.toHTML());
     }
 
     public void updateMessageDisplay(Message message)
