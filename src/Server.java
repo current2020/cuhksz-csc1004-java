@@ -200,7 +200,7 @@ class ThreadServer extends Thread
     {
         String text = input.readLine();
         int messageId = serverState.chatHistory.newMessage(user.getUsername(), text, 0);
-        messageList.addNewMessage(new Message(messageId));
+        messageList.addNewMessage(new Message(messageId, user.getUsername()));
         broadCast("~MESSAGE", Integer.toString(messageId), user.getUsername(), text);
     }
 
@@ -209,7 +209,7 @@ class ThreadServer extends Thread
         String text = input.readLine();
         int targetId = Integer.parseInt(input.readLine());
         int messageId = serverState.chatHistory.newMessage(user.getUsername(), text, targetId);
-        messageList.addNewMessage(new Message(messageId));
+        messageList.addNewMessage(new Message(messageId, user.getUsername()));
         broadCast("~QUOTATION", Integer.toString(messageId), user.getUsername(), text, Integer.toString(targetId));
     }
 

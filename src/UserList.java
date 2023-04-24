@@ -69,7 +69,7 @@ public class UserList
         try
         {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:USER_INFO.db");
+            connection = DriverManager.getConnection(DBURL);
             statement = connection.createStatement();
 
             sql = String.format("INSERT INTO USERS (USERNAME, PASSWORD) VALUES ('%s', '%s');", username, password);

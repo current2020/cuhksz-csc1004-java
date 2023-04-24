@@ -76,7 +76,7 @@ public class ClientConsole
                 password = input.nextLine();
                 try
                 {
-                    client.login(username, password);
+                    client.login(username, password, null);
                     System.out.println("login success!");
                     break;
                 }
@@ -140,10 +140,6 @@ public class ClientConsole
                             continue;
                         System.out.println(msg.toStringWithId());
                     }
-                }
-                else if(command.equals("notification"))
-                {
-                    System.out.println(client.readNotification());
                 }
             }
             catch(IOException e)

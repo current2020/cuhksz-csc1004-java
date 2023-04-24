@@ -7,46 +7,22 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-class Notification
-{
-    String text;
-    Object notificationLock = new Object();
-
-    public void newNotification(String text)
-    {
-        synchronized(notificationLock)
-        {
-            this.text = text;
-        }
-    }
-
-    public String readNotification()
-    {
-        synchronized(notificationLock)
-        {
-            if(text == null)
-                return "";
-            String str = text;
-            text = null;
-            return str;
-        }
-    }
-}
-
 class Receiver extends Thread
 {
     private MessageList messageList;
-    private Notification notification;
     private BufferedReader input;
     private boolean isRunning;
 
-    public Receiver(MessageList messageList, Notification notification, BufferedReader input)
+    private ChatPanel chatPanel;
+
+    public Receiver(MessageList messageList, BufferedReader input, ChatPanel chatPanel)
     {
         this.messageList = messageList;
-        this.notification = notification;
         this.input = input;
         this.isRunning = true;
         this.setDaemon(true);
+
+        this.chatPanel = chatPanel;
     }
 
     @Override
@@ -62,7 +38,7 @@ class Receiver extends Thread
             }
             catch(IOException e)
             {
-                notification.newNotification("It seems we have lost connection to the server.");
+                if(chatPanel != null) chatPanel.errorNotification("It seems we have lost connection with the server.", "Connection Error");
                 isRunning = false;
             }
         }
@@ -93,7 +69,9 @@ class Receiver extends Thread
         int id = Integer.parseInt(input.readLine());
         String senderName = input.readLine();
         String text = input.readLine();
-        messageList.addNewMessage(new Message(id, senderName, text));
+        Message newMessage = new Message(id, senderName, text);
+        messageList.addNewMessage(newMessage);
+        if(chatPanel != null) chatPanel.newMessageDisplay(newMessage);
     }
 
     private void handleQuotation() throws IOException
@@ -104,7 +82,9 @@ class Receiver extends Thread
         int targetId = Integer.parseInt(input.readLine());
         Message quotation = messageList.find(targetId);
         if(quotation == null) quotation = messageList.unknownMessage;
-        messageList.addNewMessage(new Message(id, senderName, text, quotation));
+        Message newMessage = new Message(id, senderName, text, quotation);
+        messageList.addNewMessage(newMessage);
+        if(chatPanel != null) chatPanel.newMessageDisplay(newMessage);
     }
 
     private void handleEdit() throws IOException
@@ -114,6 +94,7 @@ class Receiver extends Thread
         Message target = messageList.find(targetId);
         if(target == null) return;
         target.edit(text);
+        if(chatPanel != null) chatPanel.updateMessageDisplay(target);
     }
 
     private void handleRetreat() throws IOException
@@ -122,18 +103,19 @@ class Receiver extends Thread
         Message target = messageList.find(targetId);
         if(target == null) return;
         target.retreat();
+        if(chatPanel != null) chatPanel.updateMessageDisplay(target);
     }
 
     private void handleReply() throws IOException
     {
         String reply = input.readLine();
         if(reply.equals("fail"))
-            notification.newNotification("edit/retreat request rejected.");
+            if(chatPanel != null) chatPanel.normalNotification("edit/retreat request rejected.", "Reply");
     }
 
     private void handleQuit() throws IOException
     {
-        notification.newNotification("server is quiting...");
+        if(chatPanel != null) chatPanel.errorNotification("server is quiting...", "Server Exception");
         isRunning = false;
     }
 
@@ -166,7 +148,9 @@ class Receiver extends Thread
             isRetreated = input.readLine().equals("1");
             isEdited = input.readLine().equals("1");
             sendingTime = new Date(Long.parseLong(input.readLine()));
-            messageList.addNewMessage(new Message(id, senderName, text, quotation, isRetreated, isEdited, sendingTime));
+            Message newMessage = new Message(id, senderName, text, quotation, isRetreated, isEdited, sendingTime);
+            messageList.addNewMessage(newMessage);
+            if(chatPanel != null) chatPanel.newMessageDisplay(newMessage);
             command = input.readLine();
         }
         if(command.equals("~QUIT"))
@@ -185,7 +169,6 @@ public class Client
     private BufferedReader input;
     private BufferedWriter output;
     private MessageList messageList;
-    private Notification notification;
     private String username;
 
     public void connect(String serverName, int port) throws IOException, ServerException
@@ -229,7 +212,7 @@ public class Client
             throw new LoginException(errorCode);
     }
 
-    public void login(String username, String password) throws IOException, LoginException, ServerException
+    public void login(String username, String password, ChatPanel chatPanel) throws IOException, LoginException, ServerException
     {
         send("~LOGIN", username, password);
         String command = input.readLine();
@@ -240,15 +223,14 @@ public class Client
         int errorCode = Integer.parseInt(input.readLine());
         if(errorCode > 0)
             throw new LoginException(errorCode);
-        start(username);
+        start(username, chatPanel);
     }
 
-    private void start(String username)
+    private void start(String username, ChatPanel chatPanel)
     {
         this.username = username;
         this.messageList = new MessageList();
-        this.notification = new Notification();
-        (new Receiver(messageList, notification, input)).start();
+        (new Receiver(messageList, input, chatPanel)).start();
     }
 
     public void sendMessage(String text) throws IOException
@@ -274,11 +256,6 @@ public class Client
     public Message[] chatQuery(int number)
     {
         return messageList.chatQuery(number);
-    }
-
-    public String readNotification()
-    {
-        return notification.readNotification();
     }
 
     public String getUsername()

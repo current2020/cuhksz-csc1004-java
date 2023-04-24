@@ -33,15 +33,16 @@ public class Message
     }
 
     /** for server, only store Id and sendingTime */
-    public Message(int id)
+    public Message(int id, String senderName)
     {
-        this(id, null, null);
+        this(id, senderName, null);
     }
 
     public int getId() { return id; }
     public String getSenderName() { return senderName; }
     public boolean isEdited() { return isEdited; }
     public boolean isRetreated() { return isRetreated; }
+    public String getText() { return text; }
 
     /** return a shorter string within lengthLimit */
     private static String fix(String str, int lengthLimit)
@@ -72,13 +73,30 @@ public class Message
         return res;
     }
 
+    public String toHTML()
+    {
+        String res = "<font color=\"#3333FF\">" + senderName + "</font> <font color=\"#6699FF\">" + sendingTime.toString() +  "</font>";
+        if(this.isRetreated)
+        {
+            res += "\n<br>\n<font color=\"#666666\">[Retreated]</font>";
+            return "<html>" + res + "</html>";
+        }
+        if(this.quotation != null)
+            res += "\n<br>\n<font color=\"#666666\">>>> " + quotation.toOneLine() + "</font>";
+        res += "\n<br>\n" + text;
+        if(this.isEdited)
+            res += "\n<br>\n<font color=\"#666666\">[Edited]</font>";
+        return "<html>\n" + res + "\n</html>";
+        
+    }
+
     /** turn this message into a short one line string for being quoted */
     public String toOneLine()
     {
         String res = senderName + ": ";
         if(isRetreated)
             return res + "[Retreated]";
-        res += fix(text, 32);
+        res += fix(text, 60);
         if(isEdited)
             res += "[Edited]";
         return res;
