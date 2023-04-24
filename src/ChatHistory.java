@@ -3,7 +3,7 @@ import java.util.Date;
 
 public class ChatHistory 
 {
-    private static final String DBURL = "jdbc:sqlite:.\\data\\CHAT_INFO.db";
+    private static final String DBURL = "jdbc:sqlite:./data/CHAT_INFO.db";
     private Connection connection;
     private int idCounter;
 

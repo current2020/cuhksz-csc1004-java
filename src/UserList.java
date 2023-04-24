@@ -2,7 +2,7 @@ import java.sql.*;
 
 public class UserList
 {
-    private static final String DBURL = "jdbc:sqlite:.\\data\\USER_INFO.db";
+    private static final String DBURL = "jdbc:sqlite:./data/USER_INFO.db";
     private Trie namepool;
     private int top;
     private static int userNumberLimit = 100;
