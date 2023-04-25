@@ -1,0 +1,3 @@
+this folder is for the server to store all its data
+
+including CHAT_INFO.db and USER_INFO.db
