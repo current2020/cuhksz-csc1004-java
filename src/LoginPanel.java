@@ -1,7 +1,6 @@
 import java.awt.event.*;
-import java.io.IOException;
-
 import javax.swing.*;
+import java.io.IOException;
 
 public class LoginPanel extends JPanel implements ActionListener
 {

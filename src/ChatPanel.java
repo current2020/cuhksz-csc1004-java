@@ -1,11 +1,8 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-
 import javax.swing.*;
 import java.util.HashMap;
+import java.io.IOException;
 
 public class ChatPanel extends JPanel implements ActionListener
 {
