@@ -24,6 +24,8 @@ public class ChatPanel extends JPanel implements ActionListener
     private int operationMode;
     private Message selectedMessage;
 
+    private EmojiFrame emojiFrame;
+
     public ChatPanel(Client client, CLientMainFrame mainFrame, String username)
     {
         this.client = client;
@@ -84,6 +86,9 @@ public class ChatPanel extends JPanel implements ActionListener
         operationButton.addActionListener(this);
         operationButton.setFocusable(false);
         operatioPanel.add(operationButton);
+
+        emojiFrame = new EmojiFrame(inputText);
+        emojiFrame.setVisible(false);
     }
 
     @Override
@@ -91,8 +96,7 @@ public class ChatPanel extends JPanel implements ActionListener
     {
         if(actionEvent.getSource() == emojiButton)
         {
-            String text = inputText.getText() + new String(Character.toChars(0x1F349));
-            inputText.setText(text);
+            emojiFrame.setVisible(true);
         }
         else if(actionEvent.getSource() == cancelButton)
         {
