@@ -67,7 +67,7 @@ public class LoginPanel extends JPanel implements ActionListener
             passwordPassword.setText("");
             try
             {
-                ChatPanel chatPanel = new ChatPanel(client, mainFrame);
+                ChatPanel chatPanel = new ChatPanel(client, mainFrame, username);
                 client.login(username, password, chatPanel);
                 mainFrame.updateContentPanel(chatPanel);
             }

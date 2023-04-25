@@ -11,6 +11,7 @@ public class ChatPanel extends JPanel implements ActionListener
 {
     private Client client;
     private CLientMainFrame mainFrame;
+    private String username;
 
     private JScrollPane displayScrollPane;
     private JPanel displayPanel;
@@ -26,10 +27,12 @@ public class ChatPanel extends JPanel implements ActionListener
     private int operationMode;
     private Message selectedMessage;
 
-    public ChatPanel(Client client, CLientMainFrame mainFrame)
+    public ChatPanel(Client client, CLientMainFrame mainFrame, String username)
     {
         this.client = client;
         this.mainFrame = mainFrame;
+        this.username = username;
+        mainFrame.setTitle(mainFrame.getTitle() + " " + username);
 
         this.messageDisplays = new HashMap<Integer, MessageDisplay>();
         this.MessageDisplayCount = 0;
@@ -173,7 +176,8 @@ public class ChatPanel extends JPanel implements ActionListener
         public Message message;
         private JLabel messageLabel;
         private JButton selectButton;
-        private static String[] operations = {"Quote", "Edit", "Retreat", "Cancel"};
+        private static String[] operationsSelf = {"Quote", "Edit", "Retreat", "Cancel"};
+        private static String[] operationsOther = {"Quote", "Cancel"};
 
         public MessageDisplay(Message message)
         {
@@ -195,8 +199,18 @@ public class ChatPanel extends JPanel implements ActionListener
 
         public void actionPerformed(ActionEvent actionEvent)
         {
-            int response =  JOptionPane.showOptionDialog(this, "Choose your operation:", "Message Selected", 
-                                                         JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, operations, 3);
+            int response;
+            if(this.message.getSenderName().equals(username))
+            {
+                response =  JOptionPane.showOptionDialog(this, "Choose your operation:", "Message Selected", 
+                                                         JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, operationsSelf, -1);
+            }
+            else
+            {
+                response = JOptionPane.showOptionDialog(this, "Choose your operation:", "Message Selected", 
+                                                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, operationsOther, -1);
+                if(response == 1) response = 3;
+            }
             if(response == 0) //quote
             {
                 toQuotationMode(this.message);
