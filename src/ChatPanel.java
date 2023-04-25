@@ -111,6 +111,8 @@ public class ChatPanel extends JPanel implements ActionListener
 
     public void performOperation(String typedText)
     {
+        if(typedText.length() == 0)
+            return;
         if(typedText.length() >= 80)
         {
             JOptionPane.showMessageDialog(this, "Message length over 80, that's too long!", "LengthLimit Exceeded", JOptionPane.PLAIN_MESSAGE);
