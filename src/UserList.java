@@ -31,7 +31,10 @@ public class UserList
 
             sql = "CREATE TABLE IF NOT EXISTS USERS (" + 
                   "USERNAME TEXT PRIMARY KEY NOT NULL, " +
-                  "PASSWORD TEXT             NOT NULL) ";
+                  "PASSWORD TEXT             NOT NULL, " + 
+                  "AGE      INT                      , " + 
+                  "GENDER   TEXT                     , " + 
+                  "ADDRESS  TEXT                     ) " ;
             statement.executeUpdate(sql);
 
             sql = "SELECT * FROM USERS;";
@@ -55,13 +58,13 @@ public class UserList
         }
     }
 
-    private void register(String username, String password)
+    private void register(String username, String password, int age, String gender, String address)
     {
         namepool.insert(username, new User(username, password));
-        SaveIntoDB(username, password);
+        SaveIntoDB(username, password, age, gender, address);
     }
 
-    private void SaveIntoDB(String username, String password)
+    private void SaveIntoDB(String username, String password, int age, String gender, String address)
     {
         Connection connection;
         Statement statement;
@@ -72,7 +75,8 @@ public class UserList
             connection = DriverManager.getConnection(DBURL);
             statement = connection.createStatement();
 
-            sql = String.format("INSERT INTO USERS (USERNAME, PASSWORD) VALUES ('%s', '%s');", username, password);
+            sql = String.format("INSERT INTO USERS (USERNAME, PASSWORD, AGE, GENDER, ADDRESS) " + 
+                                       "VALUES ('%s', '%s', %d, '%s', '%s');", username, password, age, gender, address);
             statement.executeUpdate(sql);
 
             statement.close();
@@ -86,7 +90,7 @@ public class UserList
         }
     }
 
-    public void registerAttempt(String username, String password) throws LoginException
+    public void registerAttempt(String username, String password, int age, String gender, String address) throws LoginException
     {
         if(top == userNumberLimit)
             throw LoginException.userNumberLimitExceeded();
@@ -104,7 +108,7 @@ public class UserList
             throw LoginException.passwordSyntaxError();
         if(namepool.find(username) != null)
             throw LoginException.usernameOccupied();
-        register(username, password);
+        register(username, password, age, gender, address);
     }
 
     public User loginAttempt(String username, String password) throws LoginException

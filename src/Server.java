@@ -165,9 +165,12 @@ class ThreadServer extends Thread
     {
         String username = input.readLine();
         String password = input.readLine();
+        int age = Integer.parseInt(input.readLine());
+        String gender = input.readLine();
+        String address = input.readLine();
         try
         {
-            serverState.userList.registerAttempt(username, password);
+            serverState.userList.registerAttempt(username, password, age, gender, address);
         }
         catch(LoginException e)
         {

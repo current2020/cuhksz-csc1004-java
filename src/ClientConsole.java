@@ -47,7 +47,7 @@ public class ClientConsole
                 password = input.nextLine();
                 try
                 {
-                    client.register(username, password);
+                    client.register(username, password, 0, "N/A", "Nowhere");
                     System.out.println("register success!");
                 }
                 catch(IOException e)

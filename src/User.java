@@ -2,11 +2,23 @@ public class User
 {
     private String username;
     private String password;
+    public int age;
+    public String gender;
+    public String address;
 
     public User(String username, String password)
     {
         this.username = username;
         this.password = password;
+    }
+
+    public User(String username, String password, int age, String gender, String address)
+    {
+        this.username = username;
+        this.password = password;
+        this.age = age;
+        this.gender = gender;
+        this.address = address;
     }
 
     public String getUsername()

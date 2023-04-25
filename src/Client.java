@@ -199,9 +199,9 @@ public class Client
         output.flush();
     }
 
-    public void register(String username, String password) throws IOException, LoginException, ServerException
+    public void register(String username, String password, int age, String gender, String address) throws IOException, LoginException, ServerException
     {
-        send("~REGISTER", username, password);
+        send("~REGISTER", username, password, Integer.toString(age), gender, address);
         String command = input.readLine();
         if(command.equals("~QUIT"))
             throw ServerException.serverQuiting();
