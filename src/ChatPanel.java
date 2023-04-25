@@ -131,11 +131,12 @@ public class ChatPanel extends JPanel implements ActionListener
         }
     }
 
-    public void toOperationMode(int modeCode, String operationText, Boolean cancelEnabelde, String initialText, Message selected)
+    public void toOperationMode(int modeCode, String operationText, Boolean cancelEnabelde, String initialText, Message selected, String selectedPre)
     {
         operationMode = modeCode;
         selectedMessage = selected;
         selectedLabel.setText(selected == null ? "" : selected.toOneLine());
+        selectedLabel.setText(selectedPre + selectedLabel.getText());
         inputText.setText(initialText);
         cancelButton.setEnabled(cancelEnabelde);
         operationButton.setText(operationText);
@@ -143,17 +144,17 @@ public class ChatPanel extends JPanel implements ActionListener
 
     public void toMessageMode()
     {
-        toOperationMode(0, "send", false, "", null);
+        toOperationMode(0, "send", false, "", null, "");
     }
 
     public void toQuotationMode(Message selected)
     {
-        toOperationMode(1, "send", true , "", selected);
+        toOperationMode(1, "send", true , "", selected, "quoting: ");
     }
     
     public void toEditMode(Message selected)
     {
-        toOperationMode(2, "edit", true , selected.getText(), selected);
+        toOperationMode(2, "edit", true , selected.getText(), selected, "editing: ");
     }
 
     public void newMessageDisplay(Message newMessage)
