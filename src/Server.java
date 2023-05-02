@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
+/** hold some resources needed for all threadServers */
 class ServerState
 {
     private static int clientNumberLimit = 100;
@@ -50,6 +51,7 @@ class ServerState
     }
 }
 
+/** threadserver in other threads, each handling a single client */
 class ThreadServer extends Thread
 {
     private Object outputLock = new Object();
@@ -132,6 +134,11 @@ class ThreadServer extends Thread
         this.messageList = new MessageList();
     }
 
+    /**
+     * send a command and some attatched information to client
+     * @param command
+     * @param messages
+     */
     public void send(String command, String ... messages)
     {
         try
@@ -151,6 +158,11 @@ class ThreadServer extends Thread
         catch(IOException e) {close();}
     }
 
+    /**
+     * send a command and some attatched information to all logged-in clients
+     * @param command
+     * @param messages
+     */
     private void broadCast(String command, String ... messages)
     {
         for(ThreadServer threadServer: serverState.threadServers)
@@ -246,6 +258,7 @@ class ThreadServer extends Thread
     }
 }
 
+/** accept newly connected users, running in another thread */
 class Receptionist extends Thread
 {
     private ServerSocket serverSocket;

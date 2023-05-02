@@ -7,6 +7,7 @@ public class ChatHistory
     private Connection connection;
     private int idCounter;
 
+    /** connect with CHAT_INFO.db and restore idCounter */
     public ChatHistory()
     {
         Statement statement;
@@ -55,6 +56,7 @@ public class ChatHistory
         }
     }
 
+    /** close the connection */
     public void close()
     {
         try
@@ -67,6 +69,13 @@ public class ChatHistory
         }
     }
 
+    /**
+     * store a new message into database
+     * @param senderName
+     * @param text
+     * @param quotation
+     * @return the ID of the new message
+     */
     public int newMessage(String senderName, String text, int quotation)
     {
         ++idCounter;
@@ -94,6 +103,11 @@ public class ChatHistory
         return idCounter;
     }
 
+    /**
+     * edit a message which is already in database
+     * @param id
+     * @param text
+     */
     public void editMessage(int id, String text)
     {
         Statement statement;
@@ -112,6 +126,10 @@ public class ChatHistory
         }
     }
 
+    /**
+     * retreat a message which is already in database
+     * @param id
+     */
     public void retreatMessage(int id)
     {
         Statement statement;
@@ -130,6 +148,10 @@ public class ChatHistory
         }
     }
 
+    /**
+     * restore all chat history and send them to the given threadServer
+     * @param threadServer
+     */
     public void restore(ThreadServer threadServer)
     {
         Statement statement;
@@ -163,6 +185,11 @@ public class ChatHistory
         threadServer.send("~END-CHATS");
     }
 
+    /**
+     * make a string safe for SQL
+     * @param string
+     * @return the safe string
+     */
     private static String toSafeText(String string)
     {
         return string.replace("'", "''");

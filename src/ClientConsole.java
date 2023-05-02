@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.Scanner;
 
+/** the client UI in a console, for test usage only */
 public class ClientConsole
 {
     private static Client client = new Client();

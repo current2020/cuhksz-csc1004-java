@@ -32,7 +32,7 @@ public class Message
         this(id, senderName, text, null);
     }
 
-    /** for server, only store Id and sendingTime */
+    /** for server, only store Id, senderName and sendingTime */
     public Message(int id, String senderName)
     {
         this(id, senderName, null);
@@ -73,6 +73,10 @@ public class Message
         return res;
     }
 
+    /**
+     * turn this message into HTML for display
+     * @return a string of HTML
+     */
     public String toHTML()
     {
         String res = "<font color=\"#3333FF\">" + senderName + "</font> <font color=\"#6699FF\">" + sendingTime.toString() +  "</font>";

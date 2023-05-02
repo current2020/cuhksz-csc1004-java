@@ -33,6 +33,11 @@ public class Trie
         return -1;
     }
 
+    /**
+     * insert a string into trie with attatched info
+     * @param s
+     * @param info
+     */
     public void insert(String s, User info)
     {
         int len = s.length(), u = 0, c;
@@ -50,6 +55,11 @@ public class Trie
         this.info[u] = info;
     }
 
+    /**
+     * find a certain string
+     * @param s
+     * @return the attached info, null if not found
+     */
     public User find(String s)
     {
         int len = s.length(), u = 0, c;

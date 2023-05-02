@@ -187,6 +187,12 @@ public class Client
             throw ServerException.serverBusy();
     }
 
+    /**
+     * send the server a command and some attatched information
+     * @param command
+     * @param messages
+     * @throws IOException
+     */
     private void send(String command, String ... messages) throws IOException
     {
         output.write(command);
@@ -253,6 +259,11 @@ public class Client
         send("~RETREAT", Integer.toString(targetId));
     }
 
+    /**
+     * return the most recent messages, for test usage only
+     * @param number
+     * @return
+     */
     public Message[] chatQuery(int number)
     {
         return messageList.chatQuery(number);

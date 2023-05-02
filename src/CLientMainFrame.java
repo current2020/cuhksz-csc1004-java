@@ -5,6 +5,10 @@ public class CLientMainFrame extends JFrame
 {
     private JPanel contentPanel;
 
+    /**
+     * initialize the frame and set contentPanel into connectPanel
+     * @param client
+     */
     public CLientMainFrame(Client client)
     {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

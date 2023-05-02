@@ -1,5 +1,6 @@
 import java.sql.*;
 
+/** use trie to hold all users in RAM, and connect to the USER_INFO.db */
 public class UserList
 {
     private static final String DBURL = "jdbc:sqlite:./data/USER_INFO.db";
@@ -58,6 +59,7 @@ public class UserList
         }
     }
 
+    /** this is private, use registerAttempt to register */
     private void register(String username, String password, int age, String gender, String address)
     {
         namepool.insert(username, new User(username, password));

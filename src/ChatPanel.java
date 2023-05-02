@@ -17,11 +17,11 @@ public class ChatPanel extends JPanel implements ActionListener
     private JTextField inputText;
     private JButton emojiButton;
     private JButton cancelButton;
-    private JButton operationButton;
+    private JButton operationButton; // the same button for "send" and "edit"
 
     private HashMap<Integer, MessageDisplay> messageDisplays;
     private int MessageDisplayCount;
-    private int operationMode;
+    private int operationMode; // 0 for "send", 1 for "quote and send", 2 for "edit"
     private Message selectedMessage;
 
     private EmojiFrame emojiFrame;
@@ -109,6 +109,10 @@ public class ChatPanel extends JPanel implements ActionListener
         }
     }
 
+    /**
+     * perform the "send"/"edit" operation when the button is pressed
+     * @param typedText
+     */
     public void performOperation(String typedText)
     {
         if(typedText.length() == 0)
@@ -138,6 +142,7 @@ public class ChatPanel extends JPanel implements ActionListener
         }
     }
 
+    /** change text and label of the GUI when operationMode switches */
     public void toOperationMode(int modeCode, String operationText, Boolean cancelEnabelde, String initialText, Message selected, String selectedPre)
     {
         operationMode = modeCode;
@@ -164,6 +169,10 @@ public class ChatPanel extends JPanel implements ActionListener
         toOperationMode(2, "edit", true , selected.getText(), selected, "editing: ");
     }
 
+    /**
+     * display a new message in the scrollPane
+     * @param newMessage
+     */
     public void newMessageDisplay(Message newMessage)
     {
         MessageDisplay newMessageDisplay = new MessageDisplay(newMessage);
@@ -174,11 +183,16 @@ public class ChatPanel extends JPanel implements ActionListener
         messageDisplays.put(newMessage.getId(), newMessageDisplay);
     }
 
+    /**
+     * update the display of a message when it's changed
+     * @param message
+     */
     public void updateMessageDisplay(Message message)
     {
         messageDisplays.get(message.getId()).update();
     }
 
+    /** the unit container to display a single message */
     class MessageDisplay extends JPanel implements ActionListener
     {
         public Message message;
@@ -200,6 +214,7 @@ public class ChatPanel extends JPanel implements ActionListener
             this.add(this.selectButton, BorderLayout.EAST);
         }
 
+        /** update the content of the message */
         public void update()
         {
             this.messageLabel.setText(message.toHTML());
@@ -241,11 +256,21 @@ public class ChatPanel extends JPanel implements ActionListener
         }
     }
 
+    /**
+     * show user some normal message
+     * @param message
+     * @param title
+     */
     public void normalNotification(String message, String title)
     {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.PLAIN_MESSAGE);
     }
 
+    /**
+     * show user some error message and then close the whole program
+     * @param message
+     * @param title
+     */
     public void errorNotification(String message, String title)
     {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
