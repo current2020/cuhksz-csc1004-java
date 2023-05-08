@@ -19,7 +19,7 @@ Running both server and client need java environment to run.
 
 The program is written under **JAVA 17**. Its compatibility with lower version of java is not guaranteed.
 
-##### server
+##### Server
 
 Need no environment set up except java
 
@@ -27,7 +27,7 @@ Just download the ```ServerConsole.zip```, unzip it and it's ready to run.
 
 To run it, you just need to change your directory to that folder and type ```java -jar .\ServerConsole.jar```
 
-##### client
+##### Client
 
 Need no environment set up except java
 
@@ -66,13 +66,13 @@ The server has only one ```ChatHistory``` but has many ```MessageList```. Chat h
 
 For example, when threadserver1 received a edit request from client1. It will first use messagelist1 to check if that request is legal. If it is, threadserver1 will then update chat history and ask all threadservers to send edit information to its client.
 
-##### client
+##### Client
 
 A client has two threads: a main thread and a receiver thread. Before user successfully logged in, there is only the main thread. And when the user logs into chat room, it will start the receiver thread. After that, the main thread only receives command from GUI and send that to server and the receiver thread only listens to the server and send all command from the server to GUI.
 
 ![model-client.png](https://s2.loli.net/2023/05/02/TenobZKXRCdNm7Q.png)
 
-##### communication
+##### Communication
 
 The communication between client and server following format
 
@@ -86,7 +86,7 @@ information3
 
 Function ```send()``` is used to send message in such format. This function both exists in client and server.
 
-##### client GUI
+##### Client GUI
 
 The client GUI has two frames: one main frame and a emoji frame.
 
