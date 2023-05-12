@@ -23,17 +23,19 @@ The program is written under **JAVA 17**. Its compatibility with lower version o
 
 Need no environment set up except java
 
-Just download the ```ServerConsole.zip```, unzip it and it's ready to run.
+Just unzip the ```ServerConsole.zip```, and it's ready to run.
 
-To run it, you just need to change your directory to that folder and type ```java -jar .\ServerConsole.jar```
+You can find it under ``package`` folder.
+
+To run it, you just need to **change your directory to that folder** and type ```java -jar .\ServerConsole.jar```
 
 ##### Client
 
 Need no environment set up except java
 
-Download the ```ClientGUI.jar``` and it's ready to run.
+find the ```ClientGUI.jar``` under ``package`` folder, and it's ready to run.
 
-Double click it to open.
+Double click it to open or use ``java -jar .\ClientGUI.jar`` to run it.
 
 ### Philosophy
 
