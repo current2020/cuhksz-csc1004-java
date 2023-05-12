@@ -86,9 +86,15 @@ public class ChatPanel extends JPanel implements ActionListener
         operationButton.addActionListener(this);
         operationButton.setFocusable(false);
         operatioPanel.add(operationButton);
-
+        
         emojiFrame = new EmojiFrame(inputText);
         emojiFrame.setVisible(false);
+    }
+    
+    private void close()
+    {
+        mainFrame.close();
+        emojiFrame.dispose();
     }
 
     @Override
@@ -191,7 +197,7 @@ public class ChatPanel extends JPanel implements ActionListener
     {
         messageDisplays.get(message.getId()).update();
     }
-
+    
     /** the unit container to display a single message */
     class MessageDisplay extends JPanel implements ActionListener
     {
@@ -274,6 +280,6 @@ public class ChatPanel extends JPanel implements ActionListener
     public void errorNotification(String message, String title)
     {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
-        mainFrame.quit();
+        close();
     }
 }

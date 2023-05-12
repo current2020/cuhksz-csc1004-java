@@ -30,7 +30,7 @@ public class CLientMainFrame extends JFrame
         this.validate();
     }
 
-    public void quit()
+    public void close()
     {
         this.dispose();
     }

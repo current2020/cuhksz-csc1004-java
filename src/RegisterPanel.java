@@ -140,12 +140,12 @@ public class RegisterPanel extends JPanel implements ActionListener
             catch(ServerException e)
             {
                 JOptionPane.showMessageDialog(this, e.getErrorMessage(), "Connection Failed", JOptionPane.ERROR_MESSAGE);
-                mainFrame.quit();
+                mainFrame.close();
             }
             catch(IOException e)
             {
                 JOptionPane.showMessageDialog(this, "It seems we have lost connection with the server.", "Connection Failed", JOptionPane.ERROR_MESSAGE);
-                mainFrame.quit();
+                mainFrame.close();
             }
         }
     }
