@@ -95,7 +95,9 @@ class ThreadServer extends Thread
             while(isConnected)
             {
                 command = input.readLine();
-                if(command.equals("~MESSAGE"))
+                if(command == null)
+                    continue;
+                else if(command.equals("~MESSAGE"))
                     handleMessage();
                 else if(command.equals("~QUOTATION"))
                     handleQuotation();
